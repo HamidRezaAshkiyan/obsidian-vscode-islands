@@ -60,7 +60,7 @@ body {
 }
 
 /* --------------------------------------------------------------------------
-   2. Workspace Canvas & Floating Islands Layout
+   2. Workspace Canvas, Separate Header Island & Floating Islands Layout
    -------------------------------------------------------------------------- */
 body,
 .app-container,
@@ -68,9 +68,54 @@ body,
   background-color: var(--island-canvas);
 }
 
+/* --- Separate Top Header Island (Titlebar + Window Controls) --- */
 .titlebar {
   background-color: var(--island-canvas);
   border-bottom: none;
+  padding: var(--island-gap) var(--island-gap) 0 var(--island-gap);
+  height: auto;
+  min-height: calc(var(--header-height) + var(--island-gap));
+  box-sizing: border-box;
+}
+
+/* Keep header as its own dedicated island in hidden-frameless mode too */
+body.is-hidden-frameless .titlebar {
+  position: relative;
+  height: calc(var(--header-height) + var(--island-gap));
+  padding: var(--island-gap) var(--island-gap) 0 var(--island-gap);
+  pointer-events: auto;
+  z-index: 20;
+}
+
+.titlebar-inner {
+  background-color: var(--background-secondary);
+  border: var(--island-border-width) solid var(--island-border);
+  border-radius: var(--island-radius);
+  box-shadow: var(--island-shadow);
+  height: var(--header-height);
+  min-height: var(--header-height);
+  padding: 0 8px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+body.mod-macos.is-hidden-frameless .titlebar-inner {
+  padding-left: 74px;
+}
+
+.titlebar-button-container {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 100%;
+  padding: 4px 0;
+}
+
+.titlebar-button {
+  border-radius: var(--radius-s);
+  height: 26px;
 }
 
 .workspace {
@@ -80,17 +125,26 @@ body,
   box-sizing: border-box;
 }
 
-/* macOS frameless window: keep traffic lights cleanly aligned */
-body.mod-macos.is-hidden-frameless .workspace {
-  padding-top: var(--island-gap);
-}
-
+/* Prevent Obsidian's frameless offsets from pushing ribbons/tabs under the header island */
+body.is-hidden-frameless .workspace-ribbon,
+body.is-hidden-frameless .workspace-ribbon.mod-left,
+body.is-hidden-frameless .workspace-ribbon.mod-right,
 body.mod-macos.is-hidden-frameless .workspace-ribbon.mod-left {
-  padding-top: 34px;
+  margin-top: 0;
+  padding-top: 8px;
 }
 
-/* --- Left Ribbon Island --- */
-.workspace-ribbon.mod-left {
+body.is-hidden-frameless .workspace-tabs.mod-top .workspace-tab-header-container {
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+/* --- Left & Right Ribbon Islands (Open & Collapsed) --- */
+.workspace-ribbon,
+.workspace-ribbon.mod-left,
+.workspace-ribbon.mod-right,
+.workspace-ribbon.mod-left.is-collapsed,
+.workspace-ribbon.mod-right.is-collapsed {
   background-color: var(--ribbon-background);
   border: var(--island-border-width) solid var(--island-border);
   border-radius: var(--island-radius);
@@ -99,11 +153,19 @@ body.mod-macos.is-hidden-frameless .workspace-ribbon.mod-left {
   overflow: hidden;
 }
 
-.workspace-ribbon.mod-left::before {
+.workspace-ribbon::before,
+.workspace-ribbon.mod-left::before,
+.workspace-ribbon.mod-right::before {
   display: none;
 }
 
-.workspace-ribbon .side-dock-ribbon-action {
+/* Hide empty right ribbon cleanly so it never leaves an awkward sliver */
+.workspace-ribbon.mod-right:empty {
+  display: none;
+}
+
+.workspace-ribbon .side-dock-ribbon-action,
+.workspace-ribbon .sidebar-toggle-button {
   border-radius: var(--radius-m);
 }
 
