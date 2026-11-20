@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VS Code Modern Islands — Obsidian Default Theme Preview</title>
+  <style>
+    /* Simulated Obsidian Default Theme core tokens (provided by Obsidian app.css in real app) */
+    .theme-dark {
+      --background-primary: #1e1e1e;
+      --background-primary-alt: #242424;
+      --background-secondary: #262626;
+      --background-secondary-alt: #181818;
+      --background-modifier-hover: rgba(255, 255, 255, 0.067);
+      --background-modifier-border: #363636;
+      --background-modifier-border-hover: #4a4a4a;
+      --background-modifier-cover: rgba(0, 0, 0, 0.55);
+      --ribbon-background: #262626;
+      --interactive-normal: #363636;
+      --interactive-hover: #3f3f3f;
+      --interactive-accent: #7f6df2;
+      --text-normal: #dadada;
+      --text-muted: #b3b3b3;
+      --text-faint: #666666;
+      --text-accent: #a882ff;
+      --nav-item-color: #b3b3b3;
+      --nav-item-color-hover: #dadada;
+      --nav-item-color-active: #ffffff;
+      --nav-item-background-hover: rgba(255, 255, 255, 0.067);
+      --nav-item-background-active: rgba(255, 255, 255, 0.1);
+      --icon-color: #b3b3b3;
+      --icon-color-hover: #dadada;
+      --tab-text-color: #b3b3b3;
+      --code-background: #242424;
+      --tag-background: rgba(127, 109, 242, 0.14);
+      --tag-color: #a882ff;
+    }
+
+    .theme-light {
+      --background-primary: #ffffff;
+      --background-primary-alt: #fafafa;
+      --background-secondary: #f6f6f6;
+      --background-secondary-alt: #ececec;
+      --background-modifier-hover: rgba(0, 0, 0, 0.067);
+      --background-modifier-border: #e0e0e0;
+      --background-modifier-border-hover: #bdbdbd;
+      --background-modifier-cover: rgba(0, 0, 0, 0.25);
+      --ribbon-background: #f6f6f6;
+      --interactive-normal: #ffffff;
+      --interactive-hover: #f2f2f2;
+      --interactive-accent: #7f6df2;
+      --text-normal: #222222;
+      --text-muted: #5c5c5c;
+      --text-faint: #999999;
+      --text-accent: #705dcf;
+      --nav-item-color: #5c5c5c;
+      --nav-item-color-hover: #222222;
+      --nav-item-color-active: #222222;
+      --nav-item-background-hover: rgba(0, 0, 0, 0.067);
+      --nav-item-background-active: rgba(0, 0, 0, 0.08);
+      --icon-color: #5c5c5c;
+      --icon-color-hover: #222222;
+      --tab-text-color: #5c5c5c;
+      --code-background: #f5f5f5;
+      --tag-background: rgba(127, 109, 242, 0.1);
+      --tag-color: #705dcf;
+    }
+
+    :root {
+      --font-interface: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, sans-serif;
+      --font-monospace: "SF Mono", "JetBrains Mono", Menlo, Monaco, Consolas, monospace;
+      --header-height: 38px;
+      --ribbon-width: 44px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: var(--font-interface);
+      font-size: 13.5px;
+      color: var(--text-normal);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app-container { display: flex; flex-direction: column; width: 100vw; height: 100vh; }
+
+    .titlebar {
+      height: 36px;
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      font-size: 12px;
+      color: var(--text-muted);
+      user-select: none;
+    }
+
+    .titlebar-left { display: flex; align-items: center; gap: 10px; }
+    .traffic-lights { display: flex; gap: 7px; align-items: center; }
+    .traffic-lights span { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+    .tl-close { background: #ff5f56; }
+    .tl-min { background: #ffbd2e; }
+    .tl-max { background: #27c93f; }
+
+    .preview-controls { display: flex; align-items: center; gap: 8px; }
+    .preview-controls button {
+      background: var(--interactive-normal);
+      color: var(--text-normal);
+      border: 1px solid var(--background-modifier-border);
+      padding: 3px 9px;
+      font-size: 11.5px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .preview-controls button:hover { background: var(--interactive-hover); }
+    .preview-controls button.active {
+      background: var(--interactive-accent);
+      color: #fff;
+      border-color: transparent;
+    }
+
+    .slider-group { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text-muted); }
+    .slider-group input[type="range"] { width: 64px; accent-color: var(--interactive-accent); cursor: pointer; }
+
+    .horizontal-main-container { flex: 1; display: flex; min-height: 0; }
+    .workspace { flex: 1; display: flex; flex-direction: row; min-height: 0; min-width: 0; }
+
+    .workspace-ribbon.mod-left {
+      width: var(--ribbon-width);
+      min-width: var(--ribbon-width);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+    }
+    .ribbon-group { display: flex; flex-direction: column; gap: 4px; align-items: center; }
+    .side-dock-ribbon-action {
+      width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
+      color: var(--icon-color); cursor: pointer;
+    }
+    .side-dock-ribbon-action:hover { background: var(--background-modifier-hover); color: var(--icon-color-hover); }
+
+    .workspace-split { display: flex; min-width: 0; min-height: 0; }
+    .workspace-split.mod-left-split { width: 245px; min-width: 200px; flex-direction: column; }
+    .workspace-split.mod-right-split { width: 240px; min-width: 190px; flex-direction: column; }
+    .workspace-split.mod-root { flex: 1; flex-direction: row; }
+
+    .workspace-tabs { flex: 1; display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+
+    .workspace-tab-header-container {
+      display: flex; flex-direction: row; justify-content: space-between; align-items: center;
+      height: var(--header-height); min-height: var(--header-height); padding: 0 6px;
+      background-color: var(--background-secondary);
+      border-bottom: 1px solid var(--background-modifier-border);
+      flex-shrink: 0;
+    }
+    .workspace-tab-header-container-inner { display: flex; flex-direction: row; gap: 4px; align-items: center; }
+    .workspace-tab-header {
+      display: flex; align-items: center; cursor: pointer; color: var(--tab-text-color);
+      font-size: 12.5px; padding: 5px 10px;
+    }
+    .workspace-tab-header:hover { background: var(--background-modifier-hover); }
+    .workspace-tab-header.is-active {
+      background: var(--background-primary);
+      color: var(--text-normal);
+      font-weight: 500;
+    }
+    .workspace-tab-header-inner { display: flex; align-items: center; gap: 6px; }
+    .workspace-tab-container { flex: 1; display: flex; min-height: 0; }
+    .workspace-leaf, .workspace-leaf-content { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+
+    .view-header {
+      height: 34px; min-height: 34px; display: flex; align-items: center; justify-content: space-between;
+      padding: 0 12px; color: var(--text-muted); font-size: 12px;
+      border-bottom: 1px solid var(--background-modifier-border);
+    }
+    .view-header-title-container { display: flex; align-items: center; gap: 6px; }
+    .view-header-breadcrumb { padding: 2px 6px; cursor: pointer; }
+    .view-header-breadcrumb:hover { background: var(--background-modifier-hover); color: var(--text-normal); }
+
+    .sidebar-body { flex: 1; overflow-y: auto; padding: 6px; }
+    .nav-header { padding: 8px 8px 4px 8px; }
+    .search-input-container input {
+      width: 100%; padding: 5px 9px; font-size: 12px;
+      background: var(--background-primary); color: var(--text-normal);
+      border: 1px solid var(--background-modifier-border);
+    }
+
+    .nav-folder-title, .nav-file-title, .tree-item-self {
+      display: flex; align-items: center; gap: 6px; padding: 4px 8px;
+      font-size: 12.5px; color: var(--nav-item-color); cursor: pointer; user-select: none;
+    }
+    .nav-folder-title:hover, .nav-file-title:hover, .tree-item-self:hover {
+      background: var(--nav-item-background-hover); color: var(--nav-item-color-hover);
+    }
+    .nav-file-title.is-active, .tree-item-self.is-active {
+      background: var(--nav-item-background-active); color: var(--nav-item-color-active);
+    }
+    .nav-folder-children { padding-left: 14px; }
+
+    .workspace-sidedock-vault-profile {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 8px 10px; font-size: 12.5px; color: var(--text-normal);
+    }
+    .vault-name { display: flex; align-items: center; gap: 7px; font-weight: 500; }
+    .vault-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--interactive-accent); }
+
+    .markdown-preview-view { flex: 1; overflow-y: auto; padding: 24px 32px 64px 32px; line-height: 1.65; }
+    .markdown-rendered h1 { margin: 0 0 12px 0; font-size: 1.75em; font-weight: 650; }
+    .markdown-rendered h2 { margin: 22px 0 8px 0; font-size: 1.25em; font-weight: 600; }
+    .markdown-rendered pre {
+      background: var(--code-background); border: 1px solid var(--background-modifier-border);
+      padding: 14px 16px; font-family: var(--font-monospace); font-size: 12.5px; overflow-x: auto;
+    }
+    .markdown-rendered code:not(pre code) {
+      background: var(--code-background); padding: 1px 5px; font-family: var(--font-monospace); font-size: 0.88em;
+    }
+    .callout {
+      background: rgba(127, 109, 242, 0.08);
+      border-left: 3px solid var(--interactive-accent);
+      padding: 12px 14px; margin: 14px 0;
+    }
+    .callout-title { font-weight: 600; margin-bottom: 4px; color: var(--text-accent); }
+    .tag-row { display: flex; gap: 6px; margin-bottom: 14px; }
+    a.tag { background: var(--tag-background); color: var(--tag-color); padding: 2px 8px; font-size: 0.85em; text-decoration: none; }
+    .markdown-rendered table { width: 100%; border: 1px solid var(--background-modifier-border); }
+    .markdown-rendered th, .markdown-rendered td { padding: 8px 12px; border-bottom: 1px solid var(--background-modifier-border); text-align: left; }
+    .markdown-rendered th { background: var(--background-secondary); }
+    .markdown-rendered blockquote {
+      border-left: 3px solid var(--interactive-accent); background: var(--background-secondary);
+      padding: 8px 14px; margin: 14px 0; color: var(--text-muted);
+    }
+
+    .status-bar { display: flex; align-items: center; gap: 8px; background: var(--background-secondary); font-size: 11.5px; color: var(--text-muted); }
+
+    .modal-backdrop {
+      position: fixed; inset: 0; background: var(--background-modifier-cover);
+      display: none; align-items: flex-start; justify-content: center; padding-top: 84px; z-index: 60;
+    }
+    .modal-backdrop.open { display: flex; }
+    .prompt { width: 500px; max-width: 92vw; background: var(--background-primary); padding: 8px; }
+    .prompt input { width: 100%; padding: 8px 10px; background: var(--background-secondary); color: var(--text-normal); border: 1px solid var(--background-modifier-border); }
+    .suggestion-item { padding: 6px 10px; margin-top: 4px; font-size: 13px; cursor: pointer; }
+    .suggestion-item.is-selected { background: var(--background-modifier-hover); }
+
+    .menu-preview { position: fixed; top: 130px; left: 290px; width: 200px; background: var(--background-primary); padding: 4px; z-index: 55; display: none; }
+    .menu-preview.open { display: block; }
+    .menu-item { padding: 5px 10px; font-size: 12.5px; cursor: pointer; }
+    .menu-item:hover, .menu-item.selected { background: var(--background-modifier-hover); }
+
+    .section-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-faint); padding: 8px 8px 4px 8px; font-weight: 600; }
+    svg { width: 15px; height: 15px; stroke: currentColor; fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+  </style>
+  <!-- Load theme.css AFTER Obsidian's default variables so it layers ONLY islands & rounded corners -->
+  <link rel="stylesheet" href="../theme.css" />
+</head>
+<body class="theme-dark">
+  <div class="app-container">
+    <div class="titlebar">
+      <div class="titlebar-left">
+        <div class="traffic-lights">
+          <span class="tl-close"></span>
+          <span class="tl-min"></span>
+          <span class="tl-max"></span>
+        </div>
+        <span>Obsidian Default Theme + Rounded Islands</span>
+      </div>
+
+      <div class="preview-controls">
+        <div class="slider-group">
+          <label for="radiusRange">Radius <span id="radiusVal">8px</span></label>
+          <input id="radiusRange" type="range" min="4" max="16" value="8" />
+        </div>
+        <div class="slider-group">
+          <label for="gapRange">Gap <span id="gapVal">6px</span></label>
+          <input id="gapRange" type="range" min="2" max="14" value="6" />
+        </div>
+        <button id="toggleThemeBtn">Switch to Light</button>
+        <button id="togglePaletteBtn">Command Palette</button>
+        <button id="toggleMenuBtn">Context Menu</button>
+        <button id="toggleRightBtn">Toggle Right Island</button>
+      </div>
+    </div>
+
+    <div class="horizontal-main-container">
+      <div class="workspace">
+        <div class="workspace-ribbon mod-left">
+          <div class="ribbon-group">
+            <div class="side-dock-ribbon-action"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></div>
+            <div class="side-dock-ribbon-action"><svg viewBox="0 0 24 24"><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="16" r="2.5"/><circle cx="11" cy="6" r="2.5"/><path d="M8 16.5 10 8.2M12.7 8l4 6.2M8.4 17.6l7.2-1.2"/></svg></div>
+            <div class="side-dock-ribbon-action"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/><path d="M11 7h4a2 2 0 0 1 2 2v4"/></svg></div>
+          </div>
+          <div class="ribbon-group">
+            <div class="side-dock-ribbon-action"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3h.1a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8v.1a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1z"/></svg></div>
+          </div>
+        </div>
+
+        <div class="workspace-split mod-left-split">
+          <div class="workspace-tabs">
+            <div class="workspace-tab-header-container">
+              <div class="workspace-tab-header-container-inner">
+                <div class="workspace-tab-header is-active"><div class="workspace-tab-header-inner">Files</div></div>
+                <div class="workspace-tab-header"><div class="workspace-tab-header-inner">Search</div></div>
+              </div>
+            </div>
+            <div class="workspace-tab-container">
+              <div class="workspace-leaf">
+                <div class="workspace-leaf-content">
+                  <div class="nav-header">
+                    <div class="search-input-container"><input type="search" placeholder="Filter files..." /></div>
+                  </div>
+                  <div class="sidebar-body">
+                    <div class="nav-folder-title">▾ 01 Notes</div>
+                    <div class="nav-folder-children">
+                      <div class="nav-file-title is-active">Default Theme + Islands</div>
+                      <div class="nav-file-title">Project Ideas</div>
+                      <div class="nav-file-title">Daily Log</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="workspace-sidedock-vault-profile">
+            <div class="vault-name"><span class="vault-dot"></span><span>Personal Vault</span></div>
+            <span>⇅</span>
+          </div>
+        </div>
+
+        <div class="workspace-split mod-root">
+          <div class="workspace-tabs mod-active">
+            <div class="workspace-tab-header-container">
+              <div class="workspace-tab-header-container-inner">
+                <div class="workspace-tab-header is-active"><div class="workspace-tab-header-inner">Default Theme + Islands.md</div></div>
+                <div class="workspace-tab-header"><div class="workspace-tab-header-inner">Project Ideas.md</div></div>
+              </div>
+            </div>
+            <div class="workspace-tab-container">
+              <div class="workspace-leaf">
+                <div class="workspace-leaf-content">
+                  <div class="view-header">
+                    <div class="view-header-title-container">
+                      <span class="view-header-breadcrumb">01 Notes</span>
+                      <span>/</span>
+                      <span class="view-header-breadcrumb">Default Theme + Islands</span>
+                    </div>
+                  </div>
+                  <div class="markdown-preview-view markdown-rendered">
+                    <h1>Default Obsidian + Rounded Islands</h1>
+                    <div class="tag-row">
+                      <a class="tag" href="#">#obsidian-default</a>
+                      <a class="tag" href="#">#rounded-islands</a>
+                    </div>
+                    <p>
+                      Everything—colors, accent color, fonts, and Markdown styles—comes straight from
+                      <strong>Obsidian's default theme</strong>. Only the subtle <code>8px</code> rounded
+                      corners and <code>6px</code> floating island layout are added.
+                    </p>
+                    <div class="callout">
+                      <div class="callout-title">Pure Layout &amp; Radius Layer</div>
+                      <div>Switch Obsidian between Dark and Light mode or pick any custom accent color—every island automatically adapts.</div>
+                    </div>
+                    <pre><code>/* Only geometry &amp; island separation are applied */
+--island-radius: 8px;
+--island-gap: 6px;
+--island-border-width: 1px;</code></pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="workspace-tabs" style="flex: 0.72;">
+            <div class="workspace-tab-header-container">
+              <div class="workspace-tab-header-container-inner">
+                <div class="workspace-tab-header is-active"><div class="workspace-tab-header-inner">Split Pane.md</div></div>
+              </div>
+            </div>
+            <div class="workspace-tab-container">
+              <div class="workspace-leaf">
+                <div class="workspace-leaf-content">
+                  <div class="view-header"><div class="view-header-title-container"><span class="view-header-breadcrumb">Split Pane</span></div></div>
+                  <div class="markdown-preview-view markdown-rendered">
+                    <h2 style="margin-top: 0;">Independent Islands</h2>
+                    <table>
+                      <thead><tr><th>Element</th><th>Radius</th></tr></thead>
+                      <tbody>
+                        <tr><td>Workspace Islands</td><td><code>8px</code></td></tr>
+                        <tr><td>Cards, Inputs &amp; Code</td><td><code>6px</code></td></tr>
+                        <tr><td>Tabs, Tags &amp; Items</td><td><code>4px</code></td></tr>
+                      </tbody>
+                    </table>
+                    <blockquote>Each split pane becomes its own self-contained rounded island.</blockquote>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="workspace-split mod-right-split" id="rightSidebar">
+          <div class="workspace-tabs">
+            <div class="workspace-tab-header-container">
+              <div class="workspace-tab-header-container-inner">
+                <div class="workspace-tab-header is-active"><div class="workspace-tab-header-inner">Outline</div></div>
+                <div class="workspace-tab-header"><div class="workspace-tab-header-inner">Backlinks</div></div>
+              </div>
+            </div>
+            <div class="workspace-tab-container">
+              <div class="workspace-leaf">
+                <div class="workspace-leaf-content">
+                  <div class="sidebar-body">
+                    <div class="section-label">Outline</div>
+                    <div class="tree-item-self is-active">Default Obsidian + Rounded Islands</div>
+                    <div class="tree-item-self" style="padding-left: 18px;">Independent Islands</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="status-bar">
+      <span class="status-bar-item">2 backlinks</span>
+      <span class="status-bar-item">96 words</span>
+    </div>
+
+    <div class="modal-backdrop" id="paletteModal">
+      <div class="prompt">
+        <input type="text" value="Theme: " />
+        <div class="suggestion-item is-selected">Appearance: Toggle Dark / Light Mode</div>
+        <div class="suggestion-item">Split right (new editor island)</div>
+      </div>
+    </div>
+
+    <div class="menu menu-preview" id="contextMenu">
+      <div class="menu-item selected">Open in new tab</div>
+      <div class="menu-item">Open to the right</div>
+      <div class="menu-item">Rename...</div>
+    </div>
+  </div>
+
+  <script>
+    const body = document.body;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("theme") === "light") {
+      body.classList.remove("theme-dark");
+      body.classList.add("theme-light");
+    }
+    if (params.get("clean") === "1") {
+      const controls = document.querySelector(".preview-controls");
+      if (controls) controls.style.display = "none";
+    }
+    const toggleThemeBtn = document.getElementById("toggleThemeBtn");
+    const togglePaletteBtn = document.getElementById("togglePaletteBtn");
+    const toggleMenuBtn = document.getElementById("toggleMenuBtn");
+    const toggleRightBtn = document.getElementById("toggleRightBtn");
+    const paletteModal = document.getElementById("paletteModal");
+    const contextMenu = document.getElementById("contextMenu");
+    const rightSidebar = document.getElementById("rightSidebar");
+    const radiusRange = document.getElementById("radiusRange");
+    const gapRange = document.getElementById("gapRange");
+    const radiusVal = document.getElementById("radiusVal");
+    const gapVal = document.getElementById("gapVal");
+
+    toggleThemeBtn.addEventListener("click", () => {
+      const isDark = body.classList.contains("theme-dark");
+      body.classList.toggle("theme-dark", !isDark);
+      body.classList.toggle("theme-light", isDark);
+      toggleThemeBtn.textContent = isDark ? "Switch to Dark" : "Switch to Light";
+    });
+    togglePaletteBtn.addEventListener("click", () => {
+      paletteModal.classList.toggle("open");
+      togglePaletteBtn.classList.toggle("active", paletteModal.classList.contains("open"));
+    });
+    paletteModal.addEventListener("click", (e) => {
+      if (e.target === paletteModal) {
+        paletteModal.classList.remove("open");
+        togglePaletteBtn.classList.remove("active");
+      }
+    });
+    toggleMenuBtn.addEventListener("click", () => {
+      contextMenu.classList.toggle("open");
+      toggleMenuBtn.classList.toggle("active", contextMenu.classList.contains("open"));
+    });
+    toggleRightBtn.addEventListener("click", () => {
+      rightSidebar.classList.toggle("is-sidedock-collapsed");
+    });
+    radiusRange.addEventListener("input", (e) => {
+      const val = e.target.value + "px";
+      document.documentElement.style.setProperty("--island-radius", val);
+      radiusVal.textContent = val;
+    });
+    gapRange.addEventListener("input", (e) => {
+      const val = e.target.value + "px";
+      document.documentElement.style.setProperty("--island-gap", val);
+      gapVal.textContent = val;
+    });
+  </script>
+</body>
+</html>

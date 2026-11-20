@@ -1,0 +1,353 @@
+/* ==========================================================================
+   VS Code Modern Islands — Obsidian Theme
+   Preserves 100% of Obsidian's default theme (colors, accent, typography,
+   and syntax) while applying only minimal subtle rounded corners and
+   self-contained floating workspace islands.
+   Version: 1.0.0
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Island Geometry & Unified Minimal Corner Radius Scale
+   -------------------------------------------------------------------------- */
+:root,
+body {
+  /* Core island geometry (customizable via Style Settings) */
+  --island-radius: 8px;
+  --island-gap: 6px;
+  --island-border-width: 1px;
+
+  /* Subtle rounded corner scale across Obsidian */
+  --radius-xs: 3px;
+  --radius-s: 4px;
+  --radius-m: 6px;
+  --radius-l: 8px;
+  --radius-xl: 10px;
+
+  /* Component radii */
+  --input-radius: var(--radius-m);
+  --button-radius: var(--radius-m);
+  --checkbox-radius: var(--radius-s);
+  --callout-radius: var(--radius-m);
+  --tag-radius: var(--radius-s);
+  --modal-radius: var(--island-radius);
+  --prompt-radius: var(--island-radius);
+  --popover-radius: var(--island-radius);
+  --menu-radius: var(--island-radius);
+  --tab-radius: var(--radius-s);
+  --tab-radius-active: var(--radius-s);
+  --tab-curve: 0px;
+
+  /* Remove hard full-bleed dividers — replaced by island gaps & borders */
+  --divider-width: 0px;
+  --divider-width-hover: 2px;
+  --divider-color: transparent;
+  --tab-outline-width: 0px;
+
+  /* Inherit native Obsidian surfaces for canvas & island borders */
+  --island-canvas: var(--background-secondary-alt);
+  --island-border: var(--background-modifier-border);
+  --island-border-active: var(--background-modifier-border-hover);
+}
+
+.theme-dark {
+  --island-shadow: 0 1px 2px rgba(0, 0, 0, 0.22);
+  --island-shadow-elevated: 0 6px 20px rgba(0, 0, 0, 0.35);
+}
+
+.theme-light {
+  --island-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --island-shadow-elevated: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* --------------------------------------------------------------------------
+   2. Workspace Canvas & Floating Islands Layout
+   -------------------------------------------------------------------------- */
+body,
+.app-container,
+.horizontal-main-container {
+  background-color: var(--island-canvas);
+}
+
+.titlebar {
+  background-color: var(--island-canvas);
+  border-bottom: none;
+}
+
+.workspace {
+  background-color: var(--island-canvas);
+  padding: var(--island-gap);
+  gap: var(--island-gap);
+  box-sizing: border-box;
+}
+
+/* macOS frameless window: keep traffic lights cleanly aligned */
+body.mod-macos.is-hidden-frameless .workspace {
+  padding-top: var(--island-gap);
+}
+
+body.mod-macos.is-hidden-frameless .workspace-ribbon.mod-left {
+  padding-top: 34px;
+}
+
+/* --- Left Ribbon Island --- */
+.workspace-ribbon.mod-left {
+  background-color: var(--ribbon-background);
+  border: var(--island-border-width) solid var(--island-border);
+  border-radius: var(--island-radius);
+  box-shadow: var(--island-shadow);
+  margin: 0;
+  overflow: hidden;
+}
+
+.workspace-ribbon.mod-left::before {
+  display: none;
+}
+
+.workspace-ribbon .side-dock-ribbon-action {
+  border-radius: var(--radius-m);
+}
+
+/* --- Transparent Split Containers (expose canvas gaps between islands) --- */
+.workspace-split {
+  background-color: transparent;
+  border: none;
+}
+
+.workspace-split.mod-root,
+.workspace-split.mod-horizontal,
+.workspace-split.mod-vertical,
+.workspace-split.mod-left-split,
+.workspace-split.mod-right-split {
+  background-color: transparent;
+  gap: var(--island-gap);
+}
+
+/* Collapse sidebars cleanly with zero stray gap or border */
+.workspace-split.mod-left-split.is-sidedock-collapsed,
+.workspace-split.mod-right-split.is-sidedock-collapsed {
+  display: none;
+}
+
+/* --- Left & Right Sidebar Islands --- */
+.workspace-split.mod-left-split .workspace-tabs,
+.workspace-split.mod-right-split .workspace-tabs {
+  background-color: var(--background-secondary);
+  border: var(--island-border-width) solid var(--island-border);
+  border-radius: var(--island-radius);
+  box-shadow: var(--island-shadow);
+  overflow: hidden;
+}
+
+/* Vault switcher footer as its own compact island */
+.workspace-sidedock-vault-profile {
+  background-color: var(--background-secondary);
+  border: var(--island-border-width) solid var(--island-border);
+  border-radius: var(--island-radius);
+  box-shadow: var(--island-shadow);
+  margin: 0;
+}
+
+.workspace-sidedock-vault-profile .workspace-drawer-vault-switcher,
+.workspace-sidedock-vault-profile .clickable-icon {
+  border-radius: var(--radius-s);
+}
+
+/* --- Main Editor Panes as Independent Islands --- */
+.workspace-split.mod-root .workspace-tabs {
+  background-color: var(--background-primary);
+  border: var(--island-border-width) solid var(--island-border);
+  border-radius: var(--island-radius);
+  box-shadow: var(--island-shadow);
+  overflow: hidden;
+}
+
+.workspace-split.mod-root .workspace-tabs.mod-active {
+  border-color: var(--island-border-active);
+}
+
+/* Stacked Tabs compatibility */
+.workspace-tabs.mod-stacked .workspace-leaf {
+  border-radius: var(--island-radius);
+  border-right: var(--island-border-width) solid var(--island-border);
+}
+
+/* --- Resize Handles (centered in island gaps, subtle hover highlight) --- */
+.workspace-leaf-resize-handle {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+.workspace-leaf-resize-handle:hover,
+.workspace-leaf-resize-handle:active {
+  background-color: var(--interactive-accent);
+  border-radius: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   3. Clean Rounded Tabs & Headers (Inheriting Default Obsidian Colors)
+   -------------------------------------------------------------------------- */
+.workspace-tab-header::before,
+.workspace-tab-header::after,
+.workspace-tab-header-inner::before,
+.workspace-tab-header-inner::after {
+  display: none;
+  box-shadow: none;
+}
+
+.workspace-tab-header {
+  border-radius: var(--tab-radius);
+}
+
+.workspace-tab-header-inner-close-button,
+.workspace-tab-header-new-tab .clickable-icon,
+.workspace-tab-header-tab-list .clickable-icon,
+.view-header-breadcrumb,
+.view-action {
+  border-radius: var(--radius-s);
+}
+
+/* --------------------------------------------------------------------------
+   4. Floating Status Bar Island (Bottom-Right Pill)
+   -------------------------------------------------------------------------- */
+.status-bar {
+  position: fixed;
+  right: calc(var(--island-gap) + 8px);
+  bottom: calc(var(--island-gap) + 8px);
+  border: var(--island-border-width) solid var(--island-border);
+  border-radius: var(--island-radius);
+  box-shadow: var(--island-shadow-elevated);
+  padding: 3px 10px;
+}
+
+.status-bar-item {
+  border-radius: var(--radius-xs);
+}
+
+/* --------------------------------------------------------------------------
+   5. Subtle Rounded Corners on Overlays, Settings, Controls & Content
+   -------------------------------------------------------------------------- */
+.modal,
+.prompt,
+.menu,
+.popover,
+.suggestion-container,
+.notice,
+.graph-controls {
+  border-radius: var(--island-radius);
+  border: var(--island-border-width) solid var(--island-border);
+  box-shadow: var(--island-shadow-elevated);
+}
+
+/* Settings modal with inset sidebar & content islands */
+.modal.mod-settings {
+  overflow: hidden;
+  padding: var(--island-gap);
+  background-color: var(--island-canvas);
+  gap: var(--island-gap);
+}
+
+.modal.mod-settings .vertical-tab-header {
+  border: var(--island-border-width) solid var(--island-border);
+  border-radius: var(--island-radius);
+}
+
+.modal.mod-settings .vertical-tab-content-container {
+  border: var(--island-border-width) solid var(--island-border);
+  border-radius: var(--island-radius);
+}
+
+/* Interactive items, lists & form controls */
+.nav-file-title,
+.nav-folder-title,
+.tree-item-self,
+.vertical-tab-nav-item,
+.suggestion-item,
+.menu-item,
+.nav-action-button {
+  border-radius: var(--radius-s);
+}
+
+input[type="text"],
+input[type="search"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+textarea,
+select.dropdown,
+button,
+.clickable-icon {
+  border-radius: var(--radius-m);
+}
+
+input[type="checkbox"],
+.task-list-item-checkbox {
+  border-radius: var(--checkbox-radius);
+}
+
+/* Subtle rounded corners on content blocks */
+.markdown-rendered pre,
+.callout,
+.markdown-embed,
+.internal-embed img,
+.canvas-node-container {
+  border-radius: var(--radius-m);
+}
+
+.markdown-rendered code:not(pre code),
+a.tag {
+  border-radius: var(--radius-s);
+}
+
+.markdown-rendered blockquote {
+  border-radius: 0 var(--radius-s) var(--radius-s) 0;
+}
+
+.markdown-rendered table {
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: var(--radius-m);
+  overflow: hidden;
+}
+
+/* --------------------------------------------------------------------------
+   6. Style Settings Plugin Support (Geometry Only)
+   -------------------------------------------------------------------------- */
+/* @settings
+
+name: VS Code Modern Islands
+id: vscode-modern-islands
+settings:
+  - id: islands-heading
+    title: Islands Geometry
+    type: heading
+    level: 2
+    collapsed: false
+  - id: island-radius
+    title: Island Corner Radius
+    description: Subtle rounded corners applied to every workspace island, modal, and popover.
+    type: variable-number-slider
+    default: 8
+    min: 4
+    max: 16
+    step: 1
+    format: px
+  - id: island-gap
+    title: Island Spacing (Gap)
+    description: Spacing between ribbon, sidebars, and split editor panes.
+    type: variable-number-slider
+    default: 6
+    min: 2
+    max: 14
+    step: 1
+    format: px
+  - id: island-border-width
+    title: Island Border Width
+    description: Hairline border around each island (set to 0 for borderless).
+    type: variable-number-slider
+    default: 1
+    min: 0
+    max: 2
+    step: 1
+    format: px
+
+*/
